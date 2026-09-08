@@ -20,6 +20,7 @@ Third Party Libraries:
 Supabase details:
     I created a storage bucket plugin-files
     And ran this sql in sql editor:
+    
         -- Create Developers Table
         CREATE TABLE developers (
             id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
