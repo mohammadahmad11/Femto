@@ -523,6 +523,13 @@ bool getConsoleSizeWindows(int& width, int& height) {
 int main() {
     PluginStoreClient client;
 
+    try {
+        fs::create_directories("plugins");
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "Error: " << e.what() << '\n';
+        return 0;
+    }
+
     auto plugins_folder_path = fs::canonical("plugins").string();
 
     UniversalKeyTracker tracker;
