@@ -1,0 +1,63 @@
+Boilerplate:
+#define BUILDING_PLUGIN_DLL
+#include "PluginAPI.hpp"
+using CoreAPI = ::femto::CoreAPI
+CoreAPI* the_api;
+int the_plugin_id;
+extern "C" PLUGIN_API void RunPluginThread(CoreAPI* api, int plugin_id) {
+    the_api = api;
+    the_plugin_id = plugin_id;
+    // your plugin code
+}
+
+
+Details for Plugin Devs:
+Devs can call api functions in this way:
+    the_api->apiFunction(parameters);
+All the get functions create a possible pause in the plugin program.
+
+
+Set Functions:
+ .  void create_window(int plugin_id, string in_name, int in_min_dims[2], int in_max_dims[2])
+        Creates a window, if the user has less than 26 windows already opened. Window name cant include '\n' or '\t'. You can define min and max size the window can be resized too, however the overall allowed range for the dimensions are: min_window_width = 11, max_window_width = 100, min_window_height = 11, max_window_height = 80 (these are defines that are present in the PluginAPI header file so you can use them). It is mandatory to get the window handle and call clear_screen function, in the lines right after this.
+ .  void create_window(int plugin_id, string in_name)
+	Same thing as the other overload but it defaults the min and max dimensions to overall hardcoded bounds.
+ .  void remove_window(int plugin_id, int in_win_handle)
+        Deletes the Window.
+ .  void clear_screen(int plugin_id, int in_win_handle)
+        Clears the screen.
+ .  void draw_text(int plugin_id, int in_win_handle, string text, int pos[2])
+	Draws Text on to window screen.
+ .  void draw_object(int plugin_id, int in_win_handle, int pos[2], char object[max_window_width][max_window_height], char in_clearing_symbol)
+	Draws an ASCII object / drawing on to window screen. Even if the object is only for example. 2x2 in size, you are required to give the object as an array of the same size as the window, so it would be a 2d array with the first 2 elements of the first 2 rows containing the characters you placed there. You can define the clearing symbol, ie. the symbol that means let be the original content of the pixel at that position (basically what one might call a pixel with alpha 0).
+ .  void gen_notification(string message)
+	Generates a notification for the end user.
+ .  void gen_intercomm(string message)
+	Generates a signal that other plugins can pick up if they desire to, and carry out a certain "binded" function thread upon receiving the signal.
+ .  void bind(int plugin_id, string type, string message, void (*funcPtr)())
+	It binds a void function to an intercomm or keyboard signal. In the case, of intercomm, the type would be set to "intercomm" and the message would be the targetted intercomm signal; and in case of keyboard signals, the type would be set to "keyboard" and the message would specify the particular kayboard signal, refer to the Keyboard Appendix. The binded function would run in a detached thread. If your plugin has binded a function to the same signal before, this api function call would overwrite the previous binding.
+ .  void free_bind(int plugin_id, string type, string message)
+	Clears the binding.
+
+
+Get Functions:
+ .  bool isRunning(int plugin_id)
+        Must be checked in the condition of every main loop.
+ .  int get_latest_win_handle(int plugin_id)
+        Gets the window handle of the newest window created by your plugin.
+ .  array<array<char,max_window_width>,max_window_height> get_screen(int plugin_id, int in_win_handle)
+	Gets the entire screen of the window.
+ .  pair<int,int> get_curr_dim(int plugin_id, int in_win_handle)
+	Gets the current dimensions of your window on the users screen.
+ .  string get_name(int plugin_id, int in_win_handle)
+	Gets the name of the window.
+ .  pair<int,int> get_window_focused(int plugin_id)
+	Gets the window currently focused upon by the end user. Returns {-1,-1} if no window is focused upon or if the window focused upon is not your plugin's.
+
+
+Keyboard Appendix (these are just the names given to keys in Femto, so that you can make bindings):
+    Ctrl, Shift, Alt, Space, Enter, Esc, Tab, Left Arrow, Right Arrow, Up Arrow, Down Arrow, Back Space, `.
+    Alphabets and Numbers are as it is.
+    Signals are recorded in 3 ways: " is pressed", "is held", " is released".
+    Hence a possible message when making a keyboard binding would be "K is pressed".
+
