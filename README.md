@@ -54,3 +54,6 @@ Limitations, ie. this includes things i am too tired to resolve:
 
 
 Might come around for performance enhancements or removing those limitations or bug fixes (if any).
+
+
+Given that enough plugins are made and you dont feel the absence the of acolors or a mouse, you might never need to ait the application
