@@ -18,7 +18,7 @@ Third Party Libraries:
     I set GMAIL_APP_PASSWORD to the App Password I got generated from google (do not use your regular password)
     
 Supabase details:
-    I created a storage bucket plugin-files
+    I created a storage bucket named "plugin-files"
     And ran this sql in sql editor:
     
         -- Create Developers Table
